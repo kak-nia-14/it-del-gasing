@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lomba Berenang Danau Toba — Championship Edition (400M)</title>
+  <meta name="description" content="Game kompetisi renang 400m seru di Danau Toba, Bukit Gibeon, dan Labersa dengan visual animasi kayuhan renang realistis, booster alat bantu, dan lawan Antigravity AI!">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Main Game Stylesheet -->
+  <link rel="stylesheet" href="css/toba-swim.css">
+</head>
+<body>
+
+  <!-- App Master Wrapper -->
+  <div id="appWrapper">
+
+    <!-- ======================================================================
+         TOP HEADER HUD & EXP BADGE
+         ====================================================================== -->
+    <header class="toba-header">
+      <div class="header-brand">
+        <div class="brand-gorga-badge">🏊</div>
+        <div class="brand-text">
+          <h1>LOMBA RENANG DANAU TOBA (400M)</h1>
+          <p>Toba Open Water Championship 400M</p>
+        </div>
+      </div>
+
+      <!-- Player Profile & EXP Header HUD -->
+      <div class="player-exp-hud">
+        <div class="rank-badge" id="rankTitle">
+          <span>🏊</span>
+          <span>Pemula Danau (Lv.1)</span>
+        </div>
+        <div class="exp-progress-wrap">
+          <div class="exp-label">
+            <span>EXP PERENANG</span>
+            <span id="expCount">0 EXP</span>
+          </div>
+          <div class="exp-bar-bg">
+            <div class="exp-bar-fill" id="expBarFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header Controls -->
+      <div class="header-controls">
+        <button class="icon-btn" id="btnSoundToggle" title="Suara Hidup / Mati">🔊</button>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         SCREEN 1: LOBBY & PREPARATION SETUP
+         ====================================================================== -->
+    <section class="view-screen lobby-screen active" id="lobbyScreen">
+      
+      <div class="lobby-hero-title">
+        <span class="tag">🏆 KEJUARAAN RENANG 400M SUMATERA UTARA</span>
+        <h2>Lomba Renang 400M Melawan Antigravity AI!</h2>
+        <p>Pilih perenang andalanmu (3 cowok, 2 cewek), pilih arena perairan, dan gunakan booster alat bantu untuk memenangkan medali emas!</p>
+      </div>
+
+      <div class="setup-container">
+
+        <!-- 1. Character Selection (3 Cowok & 2 Cewek) -->
+        <div class="setup-section">
+          <div class="setup-section-title">
+            <span>👤 1. Pilih Karakter Perenang</span>
+            <span style="font-size:11px; font-weight:600; color:#94a3b8;">(3 Cowok: Toga, Ucuk, Poltak | 2 Cewek: Tiur, Butet)</span>
+          </div>
+          <div class="char-grid" id="charGrid"></div>
+        </div>
+
+        <!-- 2. Location Selection (3 Lokasi - Semua 400M) -->
+        <div class="setup-section">
+          <div class="setup-section-title">
+            <span>📍 2. Pilih Lokasi Arena Lomba (Jarak 400M)</span>
+          </div>
+          <div class="loc-grid" id="locGrid"></div>
+        </div>
+
+        <!-- 3. Equipment / Gear Selection (3 Gears) -->
+        <div class="setup-section">
+          <div class="setup-section-title">
+            <span>🛟 3. Pilih Alat Bantu & Booster Spesial</span>
+          </div>
+          <div class="gear-grid" id="gearGrid"></div>
+        </div>
+
+        <!-- Versus Banner Preview -->
+        <div class="vs-opponent-banner">
+          <div class="vs-left" id="playerVsPreview"></div>
+          <div class="vs-badge-center">VS</div>
+          <div class="vs-right">
+            <div style="text-align:right;">
+              <div style="font-weight:800; color:#a855f7;">Antigravity AI (DeepMind)</div>
+              <div style="font-size:10px; color:#38bdf8;">Mode Serius • Quantum Propulsion (400M)</div>
+            </div>
+            <div style="width:34px; height:34px; border-radius:50%; background:#111827; border:2px solid #a855f7; display:flex; align-items:center; justify-content:center; font-size:16px;">
+              🤖
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Race Button -->
+        <div style="display:flex; justify-content:center;">
+          <button class="btn-start-race" id="btnStartRace">
+            🚀 MULAI LOMBA RENANG 400M!
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================================
+         SCREEN 2: ACTIVE RACE SCREEN & WATER ARENA (ENHANCED 400M PROGRESS HUD)
+         ====================================================================== -->
+    <section class="view-screen race-screen" id="raceScreen">
+      
+      <!-- Top 400M Progress Hub -->
+      <div class="race-top-progress-hub">
+        
+        <div class="progress-banner-card">
+          <div class="progress-meta-row">
+            <div class="progress-counter-text">
+              <span>🏊 JARAK:</span>
+              <span class="distance-meter-badge" id="progressMetersText">0m / 400m</span>
+              <span style="font-size:11px; color:#94a3b8;" id="progressPercentText">(0.0%)</span>
+            </div>
+            <div class="gap-indicator-badge ahead" id="gapIndicatorBadge">⚖️ Berdampingan</div>
+          </div>
+
+          <!-- Multi-Split Track Progress Bar -->
+          <div class="race-track-container">
+            <div class="race-track-bar">
+              <div class="track-split-markers">
+                <div class="split-tick" style="left:0%;"></div>
+                <div class="split-tick" style="left:25%;"></div>
+                <div class="split-tick" style="left:50%;"></div>
+                <div class="split-tick" style="left:75%;"></div>
+                <div class="split-tick" style="left:100%;"></div>
+              </div>
+              <div class="track-pin player" id="playerTrackPin" style="left:0%;">P</div>
+              <div class="track-pin ai" id="aiTrackPin" style="left:0%;">AI</div>
+            </div>
+
+            <div class="split-labels-row">
+              <span>START (0m)</span>
+              <span>100m</span>
+              <span>200m (Separuh)</span>
+              <span>300m</span>
+              <span>400m (FINISH)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkpoint Alert Banner -->
+        <div class="checkpoint-popup-banner" id="checkpointPopupBanner">
+          🚩 CHECKPOINT 100M!
+        </div>
+
+        <!-- AI Realtime Speech Bubble -->
+        <div class="ai-dialogue-bubble">
+          <div class="ai-avatar-tiny">🤖</div>
+          <div class="ai-dialogue-text" id="aiDialogueText">Jarak 400m adalah ujian ketahanan sejati! Mari kita mulai!</div>
+        </div>
+
+      </div>
+
+      <!-- Water Canvas Arena -->
+      <canvas id="raceCanvas"></canvas>
+
+      <!-- Countdown Overlay -->
+      <div class="countdown-overlay" id="countdownOverlay">
+        <div class="countdown-number" id="countdownNum">3</div>
+      </div>
+
+      <!-- In-Race Bottom Action HUD -->
+      <div class="race-bottom-hud">
+        
+        <!-- Perfect Stroke Rhythm Meter -->
+        <div class="stroke-rhythm-container">
+          <div class="rhythm-label">RITME KAYUHAN:</div>
+          <div class="rhythm-track">
+            <div class="rhythm-target-zone"></div>
+            <div class="rhythm-indicator" id="rhythmIndicator"></div>
+          </div>
+          <div class="rhythm-feedback" id="rhythmFeedback"></div>
+        </div>
+
+        <!-- Dynamic Gauges: Stamina & Booster -->
+        <div class="race-gauges-row">
+          <div class="gauge-card">
+            <div class="gauge-head">
+              <span>⚡ STAMINA PERENANG</span>
+            </div>
+            <div class="gauge-bar-bg">
+              <div class="stamina-fill" id="staminaFill" style="width:100%;"></div>
+            </div>
+          </div>
+
+          <div class="gauge-card">
+            <div class="gauge-head">
+              <span>🔥 BOOSTER GAUGE</span>
+            </div>
+            <div class="gauge-bar-bg">
+              <div class="booster-fill" id="boosterFill" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Action Buttons -->
+        <div class="race-action-buttons">
+          <button class="btn-swim-stroke" id="btnSwimStroke" title="Tekan Spacebar atau Tap">
+            🏊 KAYUH RENANG (Spacebar)
+          </button>
+          <button class="btn-activate-booster" id="btnActivateBooster" title="Tekan B untuk aktifkan booster">
+            ⚡ Booster (0%)
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ======================================================================
+       SCREEN 3: MATCH RESULT & EXP AWARD MODAL
+       ====================================================================== -->
+  <div class="result-overlay" id="resultOverlay">
+    <div class="result-card">
+      <div class="result-trophy" id="resultTrophy">🏆</div>
+      <div class="result-status-title win" id="resultStatusTitle">KAMU MENANG! 🏆</div>
+      <div class="result-sub" id="resultSub">Selamat! Kamu berhasil menaklukkan jarak 400m dan mengalahkan Antigravity AI!</div>
+
+      <!-- EXP Reward Box -->
+      <div class="exp-award-box">
+        <div style="font-size:11px; font-weight:700; color:#94a3b8;">PEROLEHAN EXP 400M</div>
+        <div class="exp-diff-badge plus" id="expDiffBadge">+10 EXP</div>
+        <div class="result-stats-table">
+          <div>Waktu Tempuh: <strong id="resTimeTaken">0.00s</strong></div>
+          <div>Total Menang: <strong id="resWinCount">0</strong></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="result-actions">
+        <button class="btn-result-action rematch" id="btnRematch">🔥 Tanding Ulang</button>
+        <button class="btn-result-action lobby" id="btnReturnLobby">🏠 Ke Lobby</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/toba-swim-sprites.js"></script>
+  <script src="js/toba-swim-audio.js"></script>
+  <script src="js/toba-swim-game.js"></script>
+
+  <script>
+    // Initialize Game on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      window.tobaGame = new TobaSwimGame();
+      console.log('🏊 Lomba Berenang Danau Toba (400M Edition) ready!');
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LifeJourAdv(2D Troll Platformer)</title>
+  <meta name="description"
+    content="Game 2D platformer bertema anak SMA dengan jebakan tak terduga ala Level Devil dalam palet warna Biru, Ungu, dan Putih.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Main Game Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- Ambient Grid Background -->
+  <div class="bg-grid-overlay"></div>
+
+  <!-- Game Shell Container -->
+  <main id="game-wrapper">
+    <!-- Header / HUD Bar -->
+    <header class="game-header">
+      <!-- Logo & Title -->
+      <div class="logo-container">
+        <div class="logo-badge">🏫</div>
+        <div>
+          <h1 class="logo-text">LifeJourAdv</h1>
+          <div class="logo-subtitle">SUD Life Hardcore</div>
+        </div>
+      </div>
+
+      <!-- Stats HUD -->
+      <div class="header-stats">
+        <div class="stat-pill level">
+          <span>LEVEL</span>
+          <span class="value" id="hudLevel">1 / 15</span>
+        </div>
+        <div class="stat-pill deaths">
+          <span>💀 MATI</span>
+          <span class="value" id="hudDeaths">0</span>
+        </div>
+        <div class="stat-pill timer">
+          <span>⏱️ WAKTU</span>
+          <span class="value" id="hudTimer">00:00.0</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="header-actions">
+        <button class="icon-btn" id="btnRestart" title="Ulangi Level (R)" aria-label="Ulangi Level">🔄</button>
+        <button class="icon-btn" id="btnCharSelect" title="Pilih Karakter" aria-label="Pilih Karakter">🧑‍🎓</button>
+        <button class="icon-btn" id="btnLevelSelect" title="Pilih Level" aria-label="Pilih Level">📑</button>
+        <button class="icon-btn" id="btnSound" title="Suara / Musik" aria-label="Suara / Musik">🔊</button>
+      </div>
+    </header>
+
+    <!-- Main Canvas Viewport -->
+    <div class="canvas-container">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- Level Start Announcement Banner -->
+      <div class="level-banner" id="levelBanner">
+        <div class="title">Level 1: Hari Pertama Sekolah</div>
+        <div class="hint">Jalan santai menuju pintu kelas...</div>
+      </div>
+
+      <!-- Funny Troll / Death Toast Notification -->
+      <div class="troll-toast" id="trollToast">
+        Waduh! Kena jebakan duri!
+      </div>
+
+      <!-- Mobile Touch Controls -->
+      <div class="mobile-controls">
+        <div class="d-pad">
+          <button class="touch-btn" id="btnTouchLeft" aria-label="Kiri">◀</button>
+          <button class="touch-btn" id="btnTouchRight" aria-label="Kanan">▶</button>
+        </div>
+        <div class="action-pad">
+          <button class="touch-btn jump-btn" id="btnTouchJump" aria-label="Lompat">▲</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       MODALS & OVERLAYS
+       ========================================================================== -->
+
+  <!-- Modal 1: Character Selector (Siswa / Siswi) -->
+  <div class="modal-overlay" id="charModal">
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Tutup Modal">&times;</button>
+      <h2 class="modal-title">PILIH KARAKTER SMA</h2>
+      <p class="modal-subtitle">Pilih karakter siswa atau siswi dengan seragam putih abu-abu.</p>
+
+      <!-- Live Canvas Character Preview -->
+      <div class="character-preview-box">
+        <canvas id="charPreviewCanvas"></canvas>
+      </div>
+
+      <!-- Character Buttons -->
+      <div class="character-options">
+        <button class="char-btn active" id="btnCharBoy">👦 Rian (Siswa)</button>
+        <button class="char-btn" id="btnCharGirl">👧 Maya (Siswi)</button>
+      </div>
+
+      <div class="instruction-box">
+        <div class="instruction-row">
+          <span>Kontrol Berlari</span>
+          <span class="key-badge">A / D atau ◀ / ▶</span>
+        </div>
+        <div class="instruction-row">
+          <span>Kontrol Melompat</span>
+          <span class="key-badge">Spasi / W / ▲</span>
+        </div>
+        <div class="instruction-row">
+          <span>Restart Cepat</span>
+          <span class="key-badge">R</span>
+        </div>
+      </div>
+
+      <button class="btn-primary btn-close-modal">Selesai & Lanjut Main</button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Level Select Grid -->
+  <div class="modal-overlay" id="levelSelectModal">
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Tutup Modal">&times;</button>
+      <h2 class="modal-title">PILIH LEVEL</h2>
+      <p class="modal-subtitle">Taklukkan 15 level petualangan troll di sekolah SMA!</p>
+
+      <div class="level-grid" id="levelGrid">
+        <!-- Generated by JavaScript -->
+      </div>
+
+      <button class="btn-secondary btn-close-modal">Tutup</button>
+    </div>
+  </div>
+
+  <!-- Modal 3: Victory / Graduation Screen -->
+  <div class="modal-overlay" id="victoryModal">
+    <div class="modal-box">
+      <h2 class="modal-title">🎉 SELAMAT LULUS SMA! 🎉</h2>
+      <p class="modal-subtitle">Kamu berhasil melewati semua jebakan troll di SMA Devil!</p>
+
+      <div class="instruction-box" style="text-align: center; margin-bottom: 24px;">
+        <div style="font-size: 14px; margin-bottom: 8px;">Total Kematian Terkumpul:</div>
+        <div style="font-size: 28px; font-weight: 800; color: #ff6b81;" id="finalDeaths">0</div>
+        <div style="font-size: 14px; margin-top: 12px; margin-bottom: 4px;">Total Waktu Speedrun:</div>
+        <div style="font-size: 24px; font-weight: 800; color: var(--electric-cyan);" id="finalTime">00:00.0</div>
+      </div>
+
+      <button class="btn-primary" id="btnPlayAgain">🏆 Main Lagi dari Level 1</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

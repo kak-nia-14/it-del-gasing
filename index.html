@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Simulasi Kehidupan Asrama SUD (Dormitory Simulator)</title>
+  <meta name="description"
+    content="Game simulasi rutinitas dan disiplin asrama SMA Unggul Del: melipat baju, celana, jaket; merapikan lemari 3 tingkat; menyapu kamar 3 bunkbed; dan membereskan tempat tidur.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Main Game Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <div id="app">
+
+    <!-- ==========================================================================
+         TOP HUD / HEADER NAVIGATION
+         ========================================================================== -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="school-badge">🏫</div>
+        <div class="app-brand">
+          <h1>SUD Dorm Sim</h1>
+          <p>Simulasi Rutinitas Asrama</p>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="current-sim-badge" id="currentSimTitle">Beranda Asrama</div>
+      </div>
+
+      <div class="header-right">
+        <button class="hud-btn" id="btnBackToHub" data-view-target="hub" style="display: none;">
+          🏠 Beranda
+        </button>
+        <button class="hud-btn icon-only" id="btnSoundToggle" title="Suara Hidup / Mati">
+          🔊
+        </button>
+      </div>
+    </header>
+
+    <!-- Marathon Challenge Active HUD -->
+    <div class="marathon-hud-banner" id="marathonHudBanner">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:22px;">⚡</span>
+        <div>
+          <div style="font-weight:800; font-size:14px; color:#ffffff;">Mode Ujian Kurve Pagi Sedang Berlangsung!</div>
+          <div style="font-size:12px; color:#fecdd3;">Selesaikan 4 simulasi dengan standar asrama terbaik.</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="font-size:18px; font-weight:800; color:#ffffff; font-family:'Outfit',sans-serif;" id="marathonTimerText">00:00</div>
+        <button class="sim-btn secondary" style="padding:6px 12px; font-size:12px;" onclick="window.app.nextMarathonStage()">Lewati / Lanjut ⏩</button>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         1. VIEW: HUB / MAIN MENU
+         ========================================================================== -->
+    <section class="view-section active" id="view-hub">
+      <!-- Hero Welcome -->
+      <div class="hub-hero">
+        <div class="hero-content">
+          <h2>Selamat Datang di Asrama SUD! 🌟</h2>
+          <p>Latih keterampilan kedisiplinan dan kerapian khas asrama. Pilih salah satu simulasi di bawah atau ikuti tantangan <strong>Maraton Kurve Pagi</strong> untuk menguji ketangkasanmu!</p>
+          <div class="hero-badges">
+            <span class="tag-badge">✨ Standar Presisi Kurve</span>
+            <span class="tag-badge">👔 Melipat Pakaian</span>
+            <span class="tag-badge">🗄️ Lemari 3 Rak</span>
+            <span class="tag-badge">🧹 Denah 3 Bunkbed</span>
+            <span class="tag-badge">🛏️ Bed Making & Alkitab</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marathon Challenge Banner Card -->
+      <div class="marathon-card">
+        <div>
+          <h3 style="font-family:var(--font-heading); font-size:20px; color:#ffffff; margin-bottom:4px;">🏆 Ujian Inspeksi Kurve Marathon</h3>
+          <p style="font-size:13.5px; color:#fecdd3; max-width:620px;">
+            Hadapi ujian kurve asrama sesungguhnya: Lakukan melipat pakaian, menyusun lemari 3 tingkat, menyapu kamar 3 bunkbed, dan membereskan tempat tidur secara berurutan!
+          </p>
+        </div>
+        <button class="sim-btn marathon-btn pulse-btn" onclick="window.app.startMarathonMode()">
+          Mulai Ujian Kurve 🚀
+        </button>
+      </div>
+
+      <!-- 4 Main Simulator Cards Grid -->
+      <div class="sim-grid">
+        <!-- 1. Folding Clothes Card -->
+        <div class="sim-card" data-view-target="folding">
+          <div class="sim-card-icon">👔</div>
+          <h3>1. Melipat Pakaian</h3>
+          <p>Pelajari teknik melipat Baju Kaos/Kemeja, Celana Panjang, dan Jaket/Hoodie langkah demi langkah hingga membentuk lipatan presisi.</p>
+          <div class="sim-card-footer">
+            <span class="tag-badge">3 Jenis Pakaian</span>
+            <span class="sim-card-btn">Buka Simulator ➔</span>
+          </div>
+        </div>
+
+        <!-- 2. 3-Tier Closet Card -->
+        <div class="sim-card" data-view-target="closet">
+          <div class="sim-card-icon">🗄️</div>
+          <h3>2. Merapikan Lemari 3 Tingkat</h3>
+          <p>Tata barang harian di rak atas (Bontot, botol, snack, jam waker, gelas stainless, susu), pakaian di rak tengah (kiri: baju, tengah: jaket, kanan: celana), dan tas di rak bawah.</p>
+          <div class="sim-card-footer">
+            <span class="tag-badge">10 Item Asrama</span>
+            <span class="sim-card-btn">Buka Simulator ➔</span>
+          </div>
+        </div>
+
+        <!-- 3. Sweeping Dorm Room Card -->
+        <div class="sim-card" data-view-target="sweeping">
+          <div class="sim-card-icon">🧹</div>
+          <h3>3. Menyapu Kamar Asrama</h3>
+          <p>Gunakan sapu ijuk untuk membersihkan lantai kamar asrama yang dilengkapi 3 bunkbed bertingkat 2 dan lemari 2 pintu hingga 100% bebas debu.</p>
+          <div class="sim-card-footer">
+            <span class="tag-badge">3 Bunkbed + Lemari</span>
+            <span class="sim-card-btn">Buka Simulator ➔</span>
+          </div>
+        </div>
+
+        <!-- 4. Bed Making Card -->
+        <div class="sim-card" data-view-target="bed">
+          <div class="sim-card-icon">🛏️</div>
+          <h3>4. Membereskan Tempat Tidur</h3>
+          <p>Kencangkan sprei kasur, tepuk dan luruskan bantal, letakkan Alkitab dengan hormat di samping bantal, serta susun selimut bergaris khas Del.</p>
+          <div class="sim-card-footer">
+            <span class="tag-badge">Bed Making Kurve</span>
+            <span class="sim-card-btn">Buka Simulator ➔</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         2. VIEW: SIMULATOR MELIPAT PAKAIAN (BAJU, CELANA, JAKET)
+         ========================================================================== -->
+    <section class="view-section" id="view-folding">
+      <div class="simulator-panel">
+        <div class="sim-panel-header">
+          <div class="sim-title-wrap">
+            <h2>👔 Simulator Melipat Pakaian</h2>
+            <p>Pilih pakaian yang ingin dilipat, lalu ikuti langkah panduan visual lipatan asrama.</p>
+          </div>
+          <!-- Garment Type Tabs -->
+          <div class="folding-tabs" id="foldingTabs">
+            <!-- Rendered by foldingSim.js -->
+          </div>
+        </div>
+
+        <div class="folding-workspace">
+          <!-- Interactive Stage -->
+          <div class="folding-stage-box" id="foldingStageBox" title="Klik pakaian untuk melipat">
+            <div class="folding-success-banner" id="foldingSuccessBanner">
+              🎉 Lipatan Rapi & Sempurna!
+            </div>
+            <!-- Dynamic guide dashed line -->
+            <div class="folding-guide-line" id="foldGuideLine"></div>
+            <!-- Garment SVG container -->
+            <div id="foldingStage"></div>
+          </div>
+
+          <!-- Instruction & Controls Card -->
+          <div class="folding-instruction-card">
+            <div class="instruction-header">
+              <span class="step-indicator">PANDUAN KURVE</span>
+              <div class="step-dots-container" id="foldStepDots"></div>
+            </div>
+            <h3 class="instruction-title" id="foldStepTitle">Langkah 1: Ratakan Kain</h3>
+            <p class="instruction-desc" id="foldStepDesc">
+              Klik atau usap permukaan pakaian untuk menghilangkan kerutan kain.
+            </p>
+            <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
+              <button class="sim-btn primary pulse-btn" id="btnFoldAction">
+                Ratakan Kain ✨
+              </button>
+              <button class="sim-btn secondary" onclick="window.foldingSim.resetCurrentGarment()">
+                Mulai Ulang 🔄
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         3. VIEW: SIMULATOR MERAPIKAN LEMARI 3 TINGKAT
+         ========================================================================== -->
+    <section class="view-section" id="view-closet">
+      <div class="simulator-panel">
+        <div class="sim-panel-header">
+          <div class="sim-title-wrap">
+            <h2>🗄️ Simulator Merapikan Lemari 3 Tingkat</h2>
+            <p>Aturan: Rak Atas (6 item), Rak Tengah (Kiri: Baju, Tengah: Jaket, Kanan: Celana), Rak Bawah (Tas).</p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button class="sim-btn secondary" onclick="window.closetSim.reset()">
+              Kosongkan Lemari 🔄
+            </button>
+            <button class="sim-btn primary" onclick="window.closetSim.checkKurveInspection()">
+              🔍 Cek Inspeksi Kurve
+            </button>
+          </div>
+        </div>
+
+        <div class="closet-layout-grid">
+          <!-- 3-Tier Closet Cabinet -->
+          <div class="closet-cabinet">
+            
+            <!-- Tier 1: Top Shelf (6 items) -->
+            <div class="closet-tier" id="zoneTop" data-zone="top" 
+                 ondragover="window.closetSim.onDragOver(event)" 
+                 ondrop="window.closetSim.onDrop(event, 'top')">
+              <!-- Top shelf contents rendered by closetSim.js -->
+            </div>
+
+            <!-- Tier 2: Middle Shelf (3 sections: Left Baju, Center Jaket, Right Celana) -->
+            <div class="closet-tier" style="background:#0b1120;">
+              <div class="shelf-label">🔲 RAK TENGAH (Pakaian Terlipat)</div>
+              <div class="middle-shelf-grid">
+                <!-- Left: Baju -->
+                <div class="middle-section" id="zoneMidLeft" data-zone="mid-left"
+                     ondragover="window.closetSim.onDragOver(event)" 
+                     ondrop="window.closetSim.onDrop(event, 'mid-left')"></div>
+                <!-- Center: Jaket -->
+                <div class="middle-section" id="zoneMidCenter" data-zone="mid-center"
+                     ondragover="window.closetSim.onDragOver(event)" 
+                     ondrop="window.closetSim.onDrop(event, 'mid-center')"></div>
+                <!-- Right: Celana -->
+                <div class="middle-section" id="zoneMidRight" data-zone="mid-right"
+                     ondragover="window.closetSim.onDragOver(event)" 
+                     ondrop="window.closetSim.onDrop(event, 'mid-right')"></div>
+              </div>
+            </div>
+
+            <!-- Tier 3: Bottom Shelf (Tas) -->
+            <div class="closet-tier bottom-tier-box" id="zoneBottom" data-zone="bottom"
+                 ondragover="window.closetSim.onDragOver(event)" 
+                 ondrop="window.closetSim.onDrop(event, 'bottom')">
+              <!-- Bottom shelf contents rendered by closetSim.js -->
+            </div>
+
+          </div>
+
+          <!-- Inventory Items Dock -->
+          <div class="closet-inventory-dock">
+            <div class="inventory-header">
+              <h3>📦 Rak Barang Asrama</h3>
+            </div>
+            
+            <div class="progress-bar-wrap">
+              <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:var(--text-muted);">
+                <span>Kerapian Lemari:</span>
+                <span id="closetProgressText">0 / 10 Barang (0%)</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="closetProgressBar"></div>
+              </div>
+            </div>
+
+            <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">
+              💡 <em>Klik barang lalu klik rak tujuan, atau seret langsung (drag & drop) ke dalam lemari.</em>
+            </p>
+
+            <div class="inventory-items-grid" id="closetInventoryItems">
+              <!-- Rendered by closetSim.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         4. VIEW: SIMULATOR MENYAPU KAMAR ASRAMA (3 BUNKBED & LEMARI 2 PINTU)
+         ========================================================================== -->
+    <section class="view-section" id="view-sweeping">
+      <div class="simulator-panel">
+        <div class="sim-panel-header">
+          <div class="sim-title-wrap">
+            <h2>🧹 Simulator Menyapu Kamar Asrama</h2>
+            <p>Denah: 3 Bunkbed Bertingkat 2 (Total 6 Kasur) & Lemari 2 Pintu. Sapu seluruh kotoran ke arah serokan sampah!</p>
+          </div>
+          <div class="sweeping-controls-bar">
+            <button class="sim-btn secondary" onclick="window.sweepingSim.reset()">
+              Tabur Ulang Debu 🔄
+            </button>
+          </div>
+        </div>
+
+        <!-- Cleanliness Progress -->
+        <div class="progress-bar-wrap">
+          <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--text-muted);">
+            <span id="sweepProgressText">Kebersihan Lantai: 0% (0/45 Debu)</span>
+            <span style="color:var(--accent-light);">Arahkan sapu dengan kursor / touch</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="sweepProgressBar"></div>
+          </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="sweeping-canvas-container">
+          <canvas id="sweepingCanvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         5. VIEW: SIMULATOR MEMBERESKAN TEMPAT TIDUR
+         ========================================================================== -->
+    <section class="view-section" id="view-bed">
+      <div class="simulator-panel">
+        <div class="sim-panel-header">
+          <div class="sim-title-wrap">
+            <h2>🛏️ Simulator Membereskan Tempat Tidur</h2>
+            <p>Ratakan sprei kasur, posisikan bantal, letakkan Alkitab di samping bantal, dan susun selimut rapi.</p>
+          </div>
+          <button class="sim-btn secondary" onclick="window.bedSim.reset()">
+            Ulangi Merapikan 🔄
+          </button>
+        </div>
+
+        <div class="bed-workspace-grid">
+          <!-- Interactive Bed Stage -->
+          <div class="bed-stage-box">
+            <div id="bedMakingStage">
+              <!-- Rendered by bedMakingSim.js -->
+            </div>
+          </div>
+
+          <!-- Bed Steps & Actions -->
+          <div class="folding-instruction-card">
+            <div class="instruction-header">
+              <span class="step-indicator">STANDAR KURVE RANJANG</span>
+              <div class="step-dots-container" id="bedStepDots"></div>
+            </div>
+            <h3 class="instruction-title" id="bedStepTitle">Langkah 1: Kencangkan Sprei</h3>
+            <p class="instruction-desc" id="bedStepDesc">
+              Klik atau ketuk 4 sudut kerutan pada kasur untuk menarik dan mengencangkan sprei.
+            </p>
+            <div id="bedActionButtons" style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
+              <!-- Action button rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MODALS & OVERLAYS
+         ========================================================================== -->
+    
+    <!-- Modal 1: Lemari Selesai -->
+    <div class="modal-overlay" id="closetModal">
+      <div class="modal-box">
+        <button class="modal-close-btn btn-modal-close">&times;</button>
+        <div class="modal-icon-badge">🗄️</div>
+        <div class="modal-stars">⭐⭐⭐</div>
+        <h3 class="modal-title">Inspeksi Lemari Lulus 100%!</h3>
+        <p class="modal-desc">
+          Luar biasa! Rak atas lengkap dengan 6 item kebutuhan, rak tengah tertata rapi (baju di kiri, jaket di tengah, celana di kanan), dan tas tersimpan sempurna di rak bawah!
+        </p>
+        <div class="modal-actions">
+          <button class="sim-btn secondary btn-modal-close">Tutup</button>
+          <button class="sim-btn primary" onclick="window.app.switchView('sweeping'); document.getElementById('closetModal').classList.remove('show');">
+            Lanjut Menyapu Kamar 🧹
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Menyapu Kamar Selesai -->
+    <div class="modal-overlay" id="sweepingSuccessModal">
+      <div class="modal-box">
+        <button class="modal-close-btn btn-modal-close">&times;</button>
+        <div class="modal-icon-badge">🧹</div>
+        <div class="modal-stars">⭐⭐⭐</div>
+        <h3 class="modal-title">Kamar Bersih Mengkilap!</h3>
+        <p class="modal-desc">
+          Semua sudut kamar, kolong 3 bunkbed bertingkat, dan area sekitar lemari 2 pintu sudah bersih tanpa sebutir debu pun tersisa!
+        </p>
+        <div class="modal-actions">
+          <button class="sim-btn secondary btn-modal-close">Tutup</button>
+          <button class="sim-btn primary" onclick="window.app.switchView('bed'); document.getElementById('sweepingSuccessModal').classList.remove('show');">
+            Lanjut Membereskan Ranjang 🛏️
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 3: Ranjang Selesai -->
+    <div class="modal-overlay" id="bedSuccessModal">
+      <div class="modal-box">
+        <button class="modal-close-btn btn-modal-close">&times;</button>
+        <div class="modal-icon-badge">🛏️</div>
+        <div class="modal-stars">⭐⭐⭐</div>
+        <h3 class="modal-title">Ranjang Siap Inspeksi Kurve!</h3>
+        <p class="modal-desc">
+          Sprei kencang sempurna tanpa kerutan, bantal empuk simetris, Alkitab terhormat di samping bantal, dan selimut terlipat rapi!
+        </p>
+        <div class="modal-actions">
+          <button class="sim-btn secondary btn-modal-close">Tutup</button>
+          <button class="sim-btn primary" onclick="window.app.switchView('hub'); document.getElementById('bedSuccessModal').classList.remove('show');">
+            Kembali ke Beranda 🏠
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 4: Marathon Kurve Challenge Complete -->
+    <div class="modal-overlay" id="marathonCompleteModal">
+      <div class="modal-box" style="border-color:#fb7185;">
+        <button class="modal-close-btn btn-modal-close">&times;</button>
+        <div class="modal-icon-badge">🏆</div>
+        <div class="modal-stars">⭐⭐⭐⭐⭐</div>
+        <h3 class="modal-title" style="color:#fda4af;">LULUS INSPEKSI KURVE ASRAMA!</h3>
+        <p class="modal-desc">
+          Selamat! Kamu berhasil menyelesaikan keempat tugas rutinitas asrama (Melipat Pakaian, Menata Lemari, Menyapu Kamar 3 Bunkbed, & Membereskan Ranjang) dengan waktu rekor:
+        </p>
+        <div style="font-size:24px; font-weight:900; color:#fbbf24; font-family:'Outfit',sans-serif;" id="marathonFinalTime">
+          00:00
+        </div>
+        <div class="modal-actions">
+          <button class="sim-btn primary btn-modal-close" onclick="window.app.switchView('hub')">
+            Selesai & Ke Beranda 🏫
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Alert Popup -->
+    <div class="game-toast" id="gameToast">
+      Notifikasi Asrama
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/svgAssets.js"></script>
+  <script src="js/foldingSim.js"></script>
+  <script src="js/closetSim.js"></script>
+  <script src="js/sweepingSim.js"></script>
+  <script src="js/bedMakingSim.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>School Surfers 3D — Petualangan Lapangan Sekolah (Bulbul & Bekbek)</title>
+  <meta name="description" content="Game 3D Endless Runner di lapangan sekolah! Pilih karakter Bulbul & Bekbek, hindari bus sekolah, kabur dari Cikgu Besar & Drone, kumpulkan kotak angka, dan selesaikan 10 soal matematika saat terbang dengan Jetpack!">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Three.js 3D Engine Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Main Game Stylesheet -->
+  <link rel="stylesheet" href="css/school-surfers.css">
+</head>
+<body>
+
+  <!-- Game Master Container -->
+  <div id="gameContainer">
+
+    <!-- Three.js 3D Canvas -->
+    <canvas id="threeCanvas"></canvas>
+
+    <!-- UI Overlay Layer -->
+    <div class="game-ui-layer">
+
+      <!-- In-Game Top HUD -->
+      <div class="in-game-hud">
+        <div class="hud-left">
+          <div class="hud-stat-pill score">
+            <span>🏆</span>
+            <span id="hudScore">0 PTS</span>
+          </div>
+          <div class="hud-stat-pill coins">
+            <span>📦</span>
+            <span id="hudCoins">0</span>
+            <span style="font-size:10px; color:#cbd5e1;">KOTAK ANGKA</span>
+          </div>
+        </div>
+
+        <div class="hud-right">
+          <button class="hud-icon-btn" id="btnSoundToggle" title="Suara">🔊</button>
+        </div>
+      </div>
+
+      <!-- Chaser Alert Warning Banner -->
+      <div class="chaser-warning-pill" id="chaserWarningPill">
+        ⚠️ CIKGU BESAR & DRONE MENDEKAT! LARI LEBIH CEPAT!
+      </div>
+
+      <!-- Mobile Touch Controls -->
+      <div class="mobile-controls">
+        <div class="touch-btn-group">
+          <button class="touch-btn" id="touchLeft">◀</button>
+          <button class="touch-btn" id="touchRight">▶</button>
+        </div>
+        <div class="touch-btn-group">
+          <button class="touch-btn" id="touchJump">▲</button>
+          <button class="touch-btn" id="touchSlide">▼</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================
+         1. LOBBY & CHARACTER SELECTION (Bulbul & Bekbek)
+         ====================================================================== -->
+    <div class="screen-overlay" id="lobbyOverlay">
+      <div class="lobby-brand-title">
+        <span class="lobby-badge">🏃 3D SCHOOL RUNNER CHAMPIONSHIP</span>
+        <h1>SCHOOL SURFERS 3D</h1>
+        <p>Hindari Bus Sekolah, Kabur dari Cikgu Besar & Drone, dan Taklukkan Jetpack Matematika!</p>
+      </div>
+
+      <div class="char-select-container">
+        <!-- Bulbul (Cowok) -->
+        <div class="char-card selected" data-char="bulbul">
+          <div class="char-avatar-circle">👦</div>
+          <div class="char-name">Bulbul</div>
+          <span class="char-badge cowok">Cowok • Seragam Putih Biru</span>
+          <div class="char-desc">Murid laki-laki lincah, berani, dan cepat saat melompati atap bus sekolah!</div>
+        </div>
+
+        <!-- Bekbek (Cewek) -->
+        <div class="char-card" data-char="bekbek">
+          <div class="char-avatar-circle">👧</div>
+          <div class="char-name">Bekbek</div>
+          <span class="char-badge cewek">Cewek • Seragam Rok Lipit</span>
+          <div class="char-desc">Murid perempuan cerdas, gesit saat meluncur di bawah rintangan dan jago matematika!</div>
+        </div>
+      </div>
+
+      <button class="btn-play-start" id="btnStartGame">
+        🚀 MAIN SEKARANG!
+      </button>
+
+      <div style="margin-top:16px; font-size:11px; color:#94a3b8;">
+        Gunakan <strong>A / D (Panah Kiri/Kanan)</strong> untuk pindah jalur • <strong>W / Spasi</strong> Lompat • <strong>S</strong> Meluncur
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         2. JETPACK 10-QUESTION MATH CHALLENGE OVERLAY
+         ====================================================================== -->
+    <div class="math-jetpack-overlay" id="mathJetpackOverlay">
+      <div class="math-jetpack-card">
+        <div class="math-header">
+          <span class="math-tag">🚀 JETPACK MODE AKTIF</span>
+          <span class="math-question-count" id="mathQuestionCount">SOAL 1 / 10</span>
+        </div>
+
+        <!-- Timer Bar -->
+        <div class="math-timer-bar-bg">
+          <div class="math-timer-bar-fill" id="mathTimerFill"></div>
+        </div>
+
+        <!-- Question Prompt -->
+        <div class="math-question-prompt" id="mathQuestionPrompt">
+          12 + 15 = ?
+        </div>
+
+        <!-- 3 Option Buttons (Mapped to 3 Lanes) -->
+        <div class="math-options-grid" id="mathOptionsGrid"></div>
+
+        <div class="math-instructions">
+          💡 Jawab 10 soal dengan benar untuk mendarat kembali ke lapangan. Salah = Game Over!
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         3. GAME OVER & REPORT CARD MODAL
+         ====================================================================== -->
+    <div class="screen-overlay hidden" id="gameOverOverlay">
+      <div class="game-over-card">
+        <div class="game-over-icon">🏫</div>
+        <div class="game-over-title">TERTANGKAP!</div>
+        <div class="game-over-reason" id="gameOverReason">
+          Cikgu Besar dan Drone berhasil menangkapmu di lapangan sekolah!
+        </div>
+
+        <!-- Score Stats Box -->
+        <div class="stats-score-box">
+          <div class="stat-score-row">
+            <span style="color:#94a3b8;">Skor Akhir:</span>
+            <strong id="finalScoreText" style="color:#38bdf8;">0 PTS</strong>
+          </div>
+          <div class="stat-score-row">
+            <span style="color:#94a3b8;">Kotak Angka:</span>
+            <strong id="finalCoinsText" style="color:#f59e0b;">0 Kotak</strong>
+          </div>
+          <div class="stat-score-row">
+            <span style="color:#94a3b8;">Jarak Lari:</span>
+            <strong id="finalDistText" style="color:#34d399;">0m</strong>
+          </div>
+        </div>
+
+        <button class="btn-restart" id="btnRestartGame">
+          🔄 MAIN LAGI
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Game Scripts -->
+  <script src="js/school-surfers-models.js"></script>
+  <script src="js/school-surfers-math.js"></script>
+  <script src="js/school-surfers-engine.js"></script>
+
+  <script>
+    // Initialize Master 3D Game on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      window.schoolSurfers = new SchoolSurfersEngine();
+      console.log('🏫 School Surfers 3D successfully initialized!');
+    });
+  </script>
+
+</body>
+</html>
